@@ -9,7 +9,7 @@ https://github.com/bfansports/dynamodb-to-elasticsearch/blob/master/src/DynamoTo
 
 ## Installing
 
-`pip install -e git+https://github.com/Pax-Credit/pc_ddb2es#egg=ddb2es`
+`pip install -e git+https://github.com/Pax-Credit/pc_ddb2es#egg=ddb2es-paxcredit`
 
 For developers, To install in Development mode use -e:
 
