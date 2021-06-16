@@ -1,3 +1,5 @@
+Blocked to use in requirements by: https://github.com/aws/chalice/issues/1516
+
 # Dynamodb to Elasticsearch
 
 This is a reusable solution to implement Elasticsearch as a filtering, sorting and paginating tool for Dynamodb data in specified table. Applied in AWS chalice framework
