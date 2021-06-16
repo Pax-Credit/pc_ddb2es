@@ -1,15 +1,12 @@
-# https://github.com/bfansports/dynamodb-to-elasticsearch/blob/master/src/DynamoToES/index.py
-
 import json
 import re
 import boto3
-# import logging
+
+# dependencies import
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 from dateutil.parser import parse
 
-# The way to access app logger
-# log = logging.getLogger('payin')
 
 class DDBtoESHandler:
     '''
@@ -22,6 +19,22 @@ class DDBtoESHandler:
         self.elastic = elastic
         self.logger = logger
         
+
+    def get_ddb_stream_arn(self, table_name):
+        ''' get ddb straem arn by tablename
+        gets the first avialable stream for tablename specified
+
+        Params
+        --------
+        - table_name: string
+            dynamodb table name
+        '''
+        streams = boto3.client('dynamodbstreams').list_streams(
+            TableName=table_name,
+            Limit=1,
+        )
+        return streams['Streams'][0]['StreamArn']
+
 
     def event_process(self, event):
         for record in event:
@@ -222,15 +235,14 @@ class ESHandler:
 
     def __sortings_validate(self, sortings):
         if type(sortings) != list or len(sortings) != 2:
-            self.__add_validation_error(f'Sorting {sortings} have to be a list with 2 elements, setting defaults')
-            sortings = ['created_at', 'desc']
-
+            return False
+        
         key = sortings[0]
         direction = sortings[1]
 
         if not key in self.index_properties:
             self.__add_validation_error(f'Unknown sortings key {key}')
-            key = 'created_at'
+            return False
 
         direction = 'asc' if direction.lower() == 'asc' else 'desc'
 
